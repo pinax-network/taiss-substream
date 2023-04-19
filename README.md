@@ -1,2 +1,17 @@
-# taiss-substream
-TAISS Project Substreams
+# TAISS [Substreams](https://substreams.streamingfast.io)
+
+[![Build Status](https://github.com/pinax-network/taiss-substreams/actions/workflows/ci.yml/badge.svg)](https://github.com/pinax-network/taiss-substreams/actions/workflows/ci.yml)
+![License](https://img.shields.io/github/license/pinax-network/taiss-substreams)
+
+> [`Substreams`](https://substreams.streamingfast.io) for TAISS project
+
+## Reference
+
+- [TAISS Smart Contract](https://github.com/pinax-network/taiss-contract)
+- [Substreams](https://substreams.streamingfast.io)
+- [Prometheus](https://prometheus.io)
+
+## Features
+
+- [Prometheus `GAUGE`](https://prometheus.io/docs/concepts/metric_types/#gauge)
+  - [ ] temperature
