@@ -5,11 +5,16 @@
 
 > [`Substreams`](https://substreams.streamingfast.io) for TAISS project
 
-## Reference
+## Related
 
 - [TAISS Smart Contract](https://github.com/pinax-network/taiss-contract)
+
+## References
+
 - [Substreams](https://substreams.streamingfast.io)
 - [Prometheus](https://prometheus.io)
+  - [Substreams Prometheus](https://github.com/pinax-network/substreams-sink-prometheus)
+  - [Substreams Prometheus Rust](https://github.com/pinax-network/substreams-sink-prometheus.rs)
 
 ## Features
 
