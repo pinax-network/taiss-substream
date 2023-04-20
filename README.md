@@ -27,4 +27,5 @@ graph TD;
 ## Features
 
 - [Prometheus `GAUGE`](https://prometheus.io/docs/concepts/metric_types/#gauge)
-  - [ ] temperature
+  - [x] temperature
+  - [x] location (`x`, `y`, `z`)
