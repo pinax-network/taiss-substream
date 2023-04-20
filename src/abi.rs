@@ -3,7 +3,7 @@
 use serde::{Deserialize, Serialize};
 
 type Name = String;
-type Bool = bool;
+type TimePointSec = String;
 type Uint64 = u64;
 type Float32 = String;
 
@@ -23,15 +23,6 @@ macro_rules! impl_try_from_str {
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 #[serde(deny_unknown_fields)]
-pub struct Action {
-    pub device_id: Uint64,
-    pub r#type: String,
-    pub state: String,
-}
-impl_try_from_str!(Action);
-
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
-#[serde(deny_unknown_fields)]
 pub struct Deldevice {
     pub device_id: Uint64,
 }
@@ -42,6 +33,10 @@ impl_try_from_str!(Deldevice);
 pub struct DevicesRow {
     pub device_id: Uint64,
     pub authority: Name,
+    pub location: Vec<Float32>,
+    pub temperature: Float32,
+    pub timestamp: TimePointSec,
+    pub nonce: Uint64,
 }
 impl_try_from_str!(DevicesRow);
 
@@ -62,15 +57,6 @@ pub struct Setdevice {
     pub authority: Name,
 }
 impl_try_from_str!(Setdevice);
-
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
-#[serde(deny_unknown_fields)]
-pub struct Status {
-    pub device_id: Uint64,
-    pub battery: Float32,
-    pub connected: Bool,
-}
-impl_try_from_str!(Status);
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 #[serde(deny_unknown_fields)]

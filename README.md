@@ -5,6 +5,14 @@
 
 > [`Substreams`](https://substreams.streamingfast.io) for TAISS project
 
+## Graph
+
+```mermaid
+graph TD;
+  prom_out[map: prom_out]
+  sf.antelope.type.v1.Block[source: sf.antelope.type.v1.Block] --> prom_out
+```
+
 ## Related
 
 - [TAISS Smart Contract](https://github.com/pinax-network/taiss-contract)
