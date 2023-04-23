@@ -2,12 +2,11 @@ use std::collections::HashMap;
 
 use substreams::errors::Error;
 use substreams_antelope::Block;
-use substreams_sink_prometheus::{PrometheusOperations, Gauge};
+use substreams_sink_prometheus::{PrometheusOperations, Counter, Gauge};
 use crate::abi;
 
 #[substreams::handlers::map]
 pub fn prom_out(block: Block) -> Result<PrometheusOperations, Error> {
-
     let mut prom_out = PrometheusOperations::default();
     for trx in block.all_transaction_traces() {
         for trace in &trx.action_traces {
@@ -18,16 +17,31 @@ pub fn prom_out(block: Block) -> Result<PrometheusOperations, Error> {
 
             // skip additional receivers (i.e. not the contract account)
             if trace.receiver != account { continue; }
-            if account != "iot.taiss" { continue; }
+            if account != "d.iot.taiss" { continue; }
 
             // Temperature
             let temperature_data = abi::Temperature::try_from(action_trace.json_data.as_str());
             match temperature_data {
                 Ok(temperature_data) => {
-                    let device_id = temperature_data.device_id;
+                    // data
+                    let transmitter = temperature_data.transmitter;
+                    let receiver = temperature_data.receiver;
                     let temperature: f64 = temperature_data.temperature.parse().unwrap();
-                    let device_label = HashMap::from([("device_id".to_string(), device_id.to_string())]);
+
+                    // labels
+                    let device_label = HashMap::from([
+                        ("transmitter".to_string(), transmitter.to_string()),
+                        ("receiver".to_string(), receiver.to_string())
+                    ]);
+                    let receiver_label = HashMap::from([("signature".to_string(), receiver.to_string())]);
+                    let transmitter_label = HashMap::from([("signature".to_string(), transmitter.to_string())]);
+
+                    // gauges
                     prom_out.push(Gauge::from("temperature").with(device_label).set(temperature));
+
+                    // counters
+                    prom_out.push(Counter::from("transmitter").with(transmitter_label).inc());
+                    prom_out.push(Counter::from("receiver").with(receiver_label).inc());
                 },
                 Err(_) => {}
             }
@@ -36,14 +50,31 @@ pub fn prom_out(block: Block) -> Result<PrometheusOperations, Error> {
             let location_data = abi::Location::try_from(action_trace.json_data.as_str());
             match location_data {
                 Ok(location_data) => {
-                    let device_id = location_data.device_id;
-                    let x: f64 = location_data.x.parse().unwrap();
-                    let y: f64 = location_data.x.parse().unwrap();
-                    let z: f64 = location_data.x.parse().unwrap();
-                    let device_label = HashMap::from([("device_id".to_string(), device_id.to_string())]);
-                    prom_out.push(Gauge::from("x").with(device_label.clone()).set(x));
-                    prom_out.push(Gauge::from("y").with(device_label.clone()).set(y));
-                    prom_out.push(Gauge::from("z").with(device_label.clone()).set(z));
+                    // data
+                    let transmitter = location_data.transmitter;
+                    let receiver = location_data.receiver;
+                    let location = location_data.location;
+                    let x: f64 = location[0].parse().unwrap();
+                    let y: f64 = location[1].parse().unwrap();
+                    let z: f64 = location[2].parse().unwrap();
+
+                    // labels
+                    let device_label = HashMap::from([
+                        ("transmitter".to_string(), transmitter.to_string()),
+                        ("receiver".to_string(), receiver.to_string()),
+                        ("x".to_string(), x.to_string()),
+                        ("y".to_string(), y.to_string()),
+                        ("z".to_string(), z.to_string())
+                    ]);
+                    let receiver_label = HashMap::from([("signature".to_string(), receiver.to_string())]);
+                    let transmitter_label = HashMap::from([("signature".to_string(), transmitter.to_string())]);
+
+                    // gauges
+                    prom_out.push(Gauge::from("location").with(device_label.clone()).set(1.0));
+
+                    // counters
+                    prom_out.push(Counter::from("transmitter").with(transmitter_label).inc());
+                    prom_out.push(Counter::from("receiver").with(receiver_label).inc());
                 },
                 Err(_) => {}
             }
