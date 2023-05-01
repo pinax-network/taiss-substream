@@ -27,6 +27,7 @@ graph TD;
 ## Features
 
 - [Prometheus `GAUGE`](https://prometheus.io/docs/concepts/metric_types/#gauge)
+  - [x] setdevice (`signature`, `type`, `authority`)
   - [x] temperature
   - [x] location (`x`, `y`, `z`)
 - [Prometheus `COUNTER`](https://prometheus.io/docs/concepts/metric_types/#counter

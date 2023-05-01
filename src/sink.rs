@@ -17,7 +17,29 @@ pub fn prom_out(block: Block) -> Result<PrometheusOperations, Error> {
 
             // skip additional receivers (i.e. not the contract account)
             if trace.receiver != account { continue; }
-            if account != "d.iot.taiss" { continue; }
+            if account != "d.iot.taiss" && account != "iot.taiss" { continue; }
+
+            // Set Device
+            let set_device_data = abi::Setdevice::try_from(action_trace.json_data.as_str());
+            match set_device_data {
+                Ok(data) => {
+                    // data
+                    let authority = data.authority;
+                    let signature = data.signature;
+                    let r#type = data.r#type;
+
+                    // labels
+                    let device_label = HashMap::from([
+                        ("signature".to_string(), signature.to_string()),
+                        ("authority".to_string(), authority.to_string()),
+                        ("type".to_string(), r#type.to_string()),
+                    ]);
+
+                    // gauges
+                    prom_out.push(Gauge::from("setdevice").with(device_label).set(1.0));
+                },
+                Err(_) => {}
+            }
 
             // Temperature
             let temperature_data = abi::Temperature::try_from(action_trace.json_data.as_str());
